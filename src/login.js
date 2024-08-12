@@ -1,22 +1,63 @@
-// LoginPage.js
-import React from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
+import { redirect } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function LoginPage() {
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const navigate = useNavigate();
+
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append('email', email);
+    formData.append('password', password);
+    try {
+      // Отправляем POST запрос на сервер
+      const response = await axios.post('http://dating-app:81/public/api/login', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      console.log(response);
+      window.localStorage.setItem("authToken",response.data.token);
+      setSuccess('Registration successful!').then(navigate("/")); 
+
+  }catch (err) {
+    // Обработка ошибки
+    
+    if (err.response && err.response.status === 422) {
+      setError(`Registration failed: ${err.response.data.error}`);
+    } else {
+      setError('Registration failed. Please try again.');
+    }
+  }
+}
   return (
     <div className="flex flex-col justify-center items-center h-screen bg-gray-100 text-gray-800">
       <h2 className="text-3xl font-bold mb-6">Login</h2>
-      <form className="bg-white p-8 rounded-lg shadow-lg">
+      <form className="bg-white p-8 rounded-lg shadow-lg" onSubmit={handleLogin}>
+
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
-            Username
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+            Email
           </label>
           <input
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="username"
+            id="email"
             type="text"
-            placeholder="Username"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+
           />
         </div>
+
         <div className="mb-6">
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
             Password
@@ -26,9 +67,14 @@ function LoginPage() {
             id="password"
             type="password"
             placeholder="******************"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+
           />
         </div>
-        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
+        {error && <p className="text-red-500">{error}</p>}
+        {success && <p className="text-green-500">{success}</p>}
+        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
           Sign In
         </button>
       </form>

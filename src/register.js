@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { redirect } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function RegisterPage() {
   const [email, setEmail] = useState('');
@@ -13,6 +15,7 @@ function RegisterPage() {
   const [img, setImg] = useState(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const navigate = useNavigate();
 
   const handleFileChange = (e) => {
     setImg(e.target.files[0]);
@@ -37,16 +40,24 @@ function RegisterPage() {
 
     try {
       // Отправляем POST запрос на сервер
-      const response = await axios.post('http://dating-app:81/api/Register', formData, {
+      const response = await axios.post('http://dating-app:81/public/api/register', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
 
       // Обработка успешного ответа
-      setSuccess('Registration successful!');
+   
+
+      // console.log(response);
+      window.localStorage.setItem("authToken",response.data.token);
+      setSuccess('Registration successful!').then(navigate("/")); 
+
+      
+
     } catch (err) {
       // Обработка ошибки
+      
       if (err.response && err.response.status === 422) {
         setError(`Registration failed: ${err.response.data.error}`);
       } else {
