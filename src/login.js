@@ -17,7 +17,7 @@ function LoginPage() {
     formData.append('password', password);
     
     try {
-      const response = await axios.post('http://dating-app:81/api/login', formData, {
+      const response = await axios.post('http://dating-app:81/public/api/login', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -31,7 +31,7 @@ function LoginPage() {
       setError('');
       
       // Перенаправление
-      navigate("/");
+      navigate("/dashboard");
 
     } catch (err) {
       if (err.response && err.response.status === 422) {

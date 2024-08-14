@@ -51,7 +51,10 @@ function RegisterPage() {
 
       // console.log(response);
       window.localStorage.setItem("authToken",response.data.token);
-      setSuccess('Registration successful!').then(navigate("/")); 
+      setSuccess('Registration successful!');
+      
+      
+      navigate("/dashboard"); 
 
       
 
