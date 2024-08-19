@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import SendbirdApp from '@sendbird/uikit-react/App';
 
 function Dashboard() {
   const [avatar, setAvatar] = useState('');
@@ -211,7 +212,7 @@ function Dashboard() {
                 <button
                   className="w-12 h-12 flex justify-center items-center bg-green-500 text-white rounded-full"
                   onClick={likeProfile} // Вызов метода при нажатии на кнопку с сердечком
-                >
+                > 
                   ❤
                 </button>
                 <button

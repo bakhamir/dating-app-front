@@ -9,9 +9,12 @@ import Preference from './preferenceModal';
 import EditProfile from './EditProfile';
 import EditPreferences from './EditPreferences';
 import EditUser from './EditUser';
+import { App as SendbirdApp } from '@sendbird/uikit-react';
+import '@sendbird/uikit-react/dist/index.css';
 
 function App() {
   return (
+    
     <Router>
       <Routes>
         <Route path="/" element={<LandingPage />} />
