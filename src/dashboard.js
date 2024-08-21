@@ -171,7 +171,10 @@ function Dashboard() {
         setMatchMessage('It\'s a match!');
         localStorage.setItem('matchId',currentProfile.profile.user_id)
         // Создание чата при совпадении
-        createChat(currentProfile.profile.user_id);
+
+          createChat(currentProfile.profile.user_id);
+        
+        
 
       } else {
         setMatchMessage('No match.');
@@ -268,6 +271,9 @@ function Dashboard() {
               </h2>
               <p className="text-gray-600 dark:text-gray-400 mt-2">
                 {profiles[currentIndex].profile.shortDesc}
+              </p>
+              <p className="text-gray-600 dark:text-gray-400 mt-2">
+                {profiles[currentIndex].profile.about}
               </p>
               <div className="flex mt-4 space-x-2">
                 <button
