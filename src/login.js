@@ -25,7 +25,7 @@ function LoginPage() {
 
       // Сохранение токена в localStorage
       window.localStorage.setItem("authToken", response.data.token);
-      
+
       // Обновление состояний
       setSuccess('Login successful!');
       setError('');
