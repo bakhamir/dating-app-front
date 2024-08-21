@@ -94,7 +94,6 @@ function Dashboard() {
       await axios.post('http://dating-app:81/api/LikeUser', {
         userGetId: currentProfile.profile.user_id,
         profileId: localStorage.getItem('profileId'),
-        subscriptionId: 0,
         userSentId: localStorage.getItem('userId'),
       }, {
         headers: {
