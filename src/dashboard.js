@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef  } from 'react';
 import axios from 'axios';
 import Sendbird from 'sendbird';
 import SendbirdApp from '@sendbird/uikit-react/App';
 import './custom.css';
+import { useSwipeable } from 'react-swipeable';
+
 function Dashboard() {
   const [avatar, setAvatar] = useState('');
   const [profiles, setProfiles] = useState([]);
   const [user, setUser] = useState([]);
-
+  const [swipeDirection, setSwipeDirection] = useState(null);
+  const profileRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [error, setError] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
@@ -16,6 +19,7 @@ function Dashboard() {
   const [likeMessage, setLikeMessage] = useState('');
   const [isWidgetVisible, setIsWidgetVisible] = useState(false); // Новое состояние для видимости виджета
   const authToken = window.localStorage.getItem('authToken');
+  
   // const targetUserId = currentProfile.profile.user_id;
   const fetchProfiles = async () => {
     try {
@@ -52,6 +56,15 @@ function Dashboard() {
     .sendbird-ui-header__right.sendbird-ui-header--is-desktop {
       display: none !important;
     }
+    .card {
+        transition: transform 0.5s ease;
+      }
+      .card.swiped-left {
+        transform: translateX(-100vw) rotate(-30deg);
+      }
+      .card.swiped-right {
+        transform: translateX(100vw) rotate(30deg);
+      }
   `;
     document.head.appendChild(style);
 
@@ -205,6 +218,37 @@ function Dashboard() {
     setIsWidgetVisible(!isWidgetVisible);
   };
 
+  const handleSwipe = (direction) => {
+    setSwipeDirection(direction);
+  
+    // Плавное завершение анимации
+    setTimeout(() => {
+      // Проверка на доступность следующего профиля
+      if (currentIndex < profiles.length - 1) {
+        setCurrentIndex((prevIndex) => prevIndex + 1);
+      }
+      
+      // Сброс направления свайпа
+      setSwipeDirection(null);
+    }, 500); // Длительность должна совпадать с длительностью CSS-анимации
+  };
+  
+  
+
+
+  const swipeHandlers = useSwipeable({
+    onSwipedLeft: () => {
+      handleSwipe('left'); // Обрабатываем свайп влево
+      handleNextProfile(); // Переходим к следующему профилю
+    },
+    onSwipedRight: () => {
+      handleSwipe('right'); // Обрабатываем свайп вправо
+      likeProfile(); // Лайк профиля
+      checkMatch(); // Проверка на совпадение
+    },
+    preventScrollOnSwipe: true,
+    trackMouse: true,
+  });
   return (
     
     <div className={`h-screen bg-gray-100 flex flex-col bg-gradient-to-r from-pink-500 to-purple-500 ${isDarkTheme ? 'dark' : ''}`}>
@@ -241,12 +285,13 @@ function Dashboard() {
   </div>
 )}
 
-          
+
         </div>
       </header>
 
-      <div className="flex-1 flex justify-center items-center p-6 dark:bg-gray-900">
-        <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-4xl dark:bg-gray-800 dark:text-gray-300">
+      <div className=" h-screen flex-1 flex justify-center items-center p-6 dark:bg-gray-900">
+        <div className={`card bg-white rounded-lg shadow-lg p-6 w-full max-w-4xl dark:bg-gray-800 dark:text-gray-300 ${swipeDirection === 'right' ? 'swiped-right' : swipeDirection === 'left' ? 'swiped-left' : ''}`}
+        {...swipeHandlers}>
           {error && <p className="text-red-500">{error}</p>}
           {matchMessage && <p className="text-green-500">{matchMessage}</p>}
           {likeMessage && <p className="text-green-500">{likeMessage}</p>} {/* Уведомление об успешном лайке */}
