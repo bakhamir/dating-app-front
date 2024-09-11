@@ -14,6 +14,3 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
-.sendbird-channel-header__right-icon {
-  visibility: hidden;
-}

@@ -56,15 +56,27 @@ function Dashboard() {
     .sendbird-ui-header__right.sendbird-ui-header--is-desktop {
       display: none !important;
     }
-    .card {
-        transition: transform 0.5s ease;
-      }
-      .card.swiped-left {
-        transform: translateX(-100vw) rotate(-30deg);
-      }
-      .card.swiped-right {
-        transform: translateX(100vw) rotate(30deg);
-      }
+ .container {
+  overflow: hidden;
+  position: relative;
+}
+
+.card {
+  transition: transform 0.5s ease;
+  will-change: transform;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.card.swiped-left {
+  transform: translateX(-120%);
+}
+
+.card.swiped-right {
+  transform: translateX(120%);
+}
+
   `;
     document.head.appendChild(style);
 
@@ -221,16 +233,12 @@ function Dashboard() {
   const handleSwipe = (direction) => {
     setSwipeDirection(direction);
   
-    // Плавное завершение анимации
     setTimeout(() => {
-      // Проверка на доступность следующего профиля
       if (currentIndex < profiles.length - 1) {
         setCurrentIndex((prevIndex) => prevIndex + 1);
       }
-      
-      // Сброс направления свайпа
       setSwipeDirection(null);
-    }, 500); // Длительность должна совпадать с длительностью CSS-анимации
+    }, 500); 
   };
   
   
@@ -238,13 +246,12 @@ function Dashboard() {
 
   const swipeHandlers = useSwipeable({
     onSwipedLeft: () => {
-      handleSwipe('left'); // Обрабатываем свайп влево
-      handleNextProfile(); // Переходим к следующему профилю
+      handleSwipe('left'); 
     },
     onSwipedRight: () => {
-      handleSwipe('right'); // Обрабатываем свайп вправо
-      likeProfile(); // Лайк профиля
-      checkMatch(); // Проверка на совпадение
+      handleSwipe('right'); 
+      likeProfile(); 
+      checkMatch();
     },
     preventScrollOnSwipe: true,
     trackMouse: true,
@@ -290,8 +297,12 @@ function Dashboard() {
       </header>
 
       <div className=" h-screen flex-1 flex justify-center items-center p-6 dark:bg-gray-900">
+
         <div className={`card bg-white rounded-lg shadow-lg p-6 w-full max-w-4xl dark:bg-gray-800 dark:text-gray-300 ${swipeDirection === 'right' ? 'swiped-right' : swipeDirection === 'left' ? 'swiped-left' : ''}`}
         {...swipeHandlers}>
+
+
+
           {error && <p className="text-red-500">{error}</p>}
           {matchMessage && <p className="text-green-500">{matchMessage}</p>}
           {likeMessage && <p className="text-green-500">{likeMessage}</p>} {/* Уведомление об успешном лайке */}
@@ -351,6 +362,8 @@ function Dashboard() {
             </div>
           )}
         </div>
+
+        
       </div>
 
       <footer className="p-4 bg-gradient-to-r from-pink-500 to-purple-500  text-white text-center shadow-md dark:bg-gray-800 dark:text-gray-300">

@@ -12,9 +12,7 @@
     animation: App-logo-spin infinite 20s linear;
   }
 }
-.sendbird-channel-header__right {
-  display: none;
-}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
